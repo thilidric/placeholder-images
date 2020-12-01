@@ -1,11 +1,17 @@
 const { createCanvas, loadImage } = require("canvas");
 const fs = require("fs");
-const logger = require("./logger");
+const logger = require("../../../utilities/logger");
 
 module.exports = class ImageGenerator {
   constructor(width, height, color, token, force) {
-    this.width = width || process.env.DEFAULT_WIDTH;
-    this.height = height || process.env.DEFAULT_HEIGHT;
+    this.width =
+      (width > process.env.IMAGE_MAXWIDTH
+        ? process.env.IMAGE_MAXWIDTH
+        : width) || process.env.DEFAULT_WIDTH;
+    this.height =
+      (height > process.env.IMAGE_MAXHEIGHT
+        ? process.env.IMAGE_MAXHEIGHT
+        : height) || process.env.DEFAULT_HEIGHT;
     this.color = color || process.env.DEFAULT_COLOR;
     this.force = force || false;
     this.userToken = token || null;
@@ -29,6 +35,11 @@ module.exports = class ImageGenerator {
     } else {
       return await this.generate();
     }
+  }
+
+  async read(fileName) {
+    this.fileName = fileName;
+    return await this.serve();
   }
 
   exists() {

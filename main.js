@@ -3,13 +3,9 @@ require("dotenv").config();
 const express = require("express");
 const glob = require("glob");
 const logger = require("./utilities/logger");
-const { Sequelize } = require("sequelize");
+const sequelize = require("./utilities/db");
 const app = express();
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "./database.sqlite",
-});
 const port = process.env.PORT || 1212;
 
 sequelize
@@ -17,14 +13,17 @@ sequelize
   .then(() => {
     logger.info(`App has connected to database.`);
 
-    require("./web/routes")(app);
-
     glob.sync("./modules/*/web/routes.js").forEach((moduleRoutes) => {
       require(moduleRoutes)(app);
     });
 
     app.listen(port, () => {
-      logger.info(`App listening at http://localhost:${port}`);
+      logger.info(`App listening at port ${port}`);
+      if (process.env.NODE_ENV === "production") {
+        console.log(
+          "App started, logging is turned off in production mode, all logs are stored in log files."
+        );
+      }
     });
   })
   .catch((error) => {
