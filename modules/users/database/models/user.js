@@ -11,7 +11,18 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     unique: true,
   },
-});
+  password: DataTypes.STRING,
+  token: DataTypes.STRING
+}, {
+    defaultScope: {
+      attributes: { exclude: ['password'] },
+    },
+    scopes: {
+      withPassword: {
+        attributes: {},
+      }
+    }
+  });
 
 User.sync();
 

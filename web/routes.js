@@ -1,5 +1,6 @@
 const imageGenerator = require("../utilities/image");
 const userController = require("../modules/users/controllers/user");
+const authMiddleware = require('../modules/users/web/authMiddleware');
 
 module.exports = function (app) {
   app.get("/generate", (req, res) => {
